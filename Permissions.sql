@@ -1,0 +1,43 @@
+
+--Creating database level roles
+CREATE ROLE CUSTOMER
+CREATE ROLE CUSTOMERSERVICE
+CREATE ROLE SALES
+CREATE ROLE SALESMANAGER
+
+--Granting permissions for the CUSTOMER role
+--CUSTOMER cannot SELECT Cost_price
+GRANT SELECT ON dbo.PRODUCT (Product_id, [Name], Quantity, [Description], Sales_price, Discount) TO CUSTOMER 
+--CUSTOMER can SELECT and UPDATE their own information
+GRANT SELECT ON dbo.CUSTOMER TO CUSTOMER
+--CUSTOMER can modify everything in the CUSTOMER table but User_id
+GRANT UPDATE ON dbo.CUSTOMER(Email, [Password], Firstname, Lastname, [Address], Phone) TO CUSTOMER
+--CUSTOMER can INSERT/REMOVE a credit card
+GRANT SELECT, INSERT, DELETE ON dbo.CREDITCARD TO CUSTOMER
+--CUSTOMER can UPDATE only two columns from CREDITCARD table
+GRANT UPDATE ON dbo.CREDITCARD(Holder_name, Billing_address) TO CUSTOMER 
+
+
+
+--Granting permissions for the CUSTOMERSERVICE role 
+GRANT SELECT ON dbo.PRODUCT (Product_id, [Name], Quantity, [Description], Sales_price, Discount) TO CUSTOMERSERVICE
+--Can view customer information
+GRANT SELECT ON dbo.CUSTOMER TO CUSTOMERSERVICE
+GRANT SELECT, DELETE ON dbo.[ORDER] TO CUSTOMERSERVICE
+GRANT SELECT, INSERT, DELETE ON dbo.ORDERITEM TO CUSTOMERSERVICE 
+GRANT UPDATE ON dbo.ORDERITEM(Quantity) TO CUSTOMERSERVICE 
+
+--Granting permissions for the SALES role
+GRANT SELECT, INSERT ON dbo.PRODUCT TO SALES
+GRANT UPDATE ON dbo.PRODUCT (Product_id, [Name], Quantity, [Description]) TO SALES
+
+--Granting permissions for the SALESMANAGER role
+GRANT SELECT, INSERT, UPDATE, DELETE ON dbo.PRODUCT TO SALESMANAGER
+GRANT UNMASK TO SALESMANAGER
+
+/*
+DROP ROLE CUSTOMER
+DROP ROLE CUSTOMERSERVICE
+DROP ROLE SALES
+DROP ROLE SALESMANAGER
+*/
